@@ -1,0 +1,86 @@
+# ── Model ─────────────────────────────────────────────────────────────
+model:
+  name: "Qwen/Qwen2.5-3B"
+  quantization: "4bit"            # 4-bit QLoRA
+  attn_implementation: "flash_attention_2"
+
+# ── LoRA ──────────────────────────────────────────────────────────────
+lora:
+  r: 64
+  alpha: 128
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# ── GRPO Training ────────────────────────────────────────────────────
+grpo:
+  num_generations: 8              # G: group size for relative advantage
+  max_prompt_length: 512
+  max_completion_length: 512      # reduced from 1024 for faster training
+  temperature: 0.7                # sampling temperature during generation
+  learning_rate: 5.0e-6
+  num_train_epochs: 1
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8  # effective batch = 8
+  max_steps: 500                  # cap total training steps
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  lr_scheduler_type: "cosine"
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+  bf16: true
+  seed: 42
+  beta: 0.04                      # KL penalty coefficient
+  epsilon: 0.2                    # PPO-style clipping range
+  loss_type: "grpo"               # GRPO loss (alternatives: dapo, dr_grpo)
+  num_iterations: 1               # policy updates per generation batch
+
+# ── SFT Baseline ─────────────────────────────────────────────────────
+sft:
+  learning_rate: 2.0e-5
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  max_seq_length: 1536
+  bf16: true
+
+# ── Reward ────────────────────────────────────────────────────────────
+reward:
+  correctness_weight: 1.0         # reward for correct final answer
+  format_weight: 0.1              # bonus for structured <think>...</think> reasoning
+  length_penalty: 0.0             # optional penalty for very long outputs
+
+# ── Data ──────────────────────────────────────────────────────────────
+data:
+  train_datasets:
+    - "openai/gsm8k"
+  eval_datasets:
+    - "openai/gsm8k"
+    - "EleutherAI/hendrycks_math"
+  max_train_samples: 2000         # subset for practical training time
+  max_eval_samples: 500
+
+# ── Evaluation ────────────────────────────────────────────────────────
+evaluation:
+  num_samples: 500
+  temperature: 0.0                # greedy for eval
+  max_new_tokens: 1024
+  pass_at_k: [1, 5]
+
+# ── Paths ─────────────────────────────────────────────────────────────
+paths:
+  output_dir: "checkpoints"
+  results_dir: "results"
+  logs_dir: "logs"

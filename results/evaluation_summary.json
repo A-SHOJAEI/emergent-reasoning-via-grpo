@@ -1,0 +1,56 @@
+{
+  "base": {
+    "accuracy": 0.4825,
+    "per_source": {
+      "gsm8k": 0.535,
+      "math": 0.43
+    },
+    "reasoning_patterns": {
+      "uses_step_numbers": 0.3125,
+      "uses_equations": 0.3075,
+      "uses_therefore": 0.1225,
+      "uses_hashtag_delimiter": 0.26,
+      "uses_boxed": 0.0325,
+      "uses_think_tags": 0.0,
+      "shows_intermediate_calc": 0.955,
+      "avg_response_length": 382.505,
+      "avg_num_lines": 6.2525
+    }
+  },
+  "sft": {
+    "accuracy": 0.555,
+    "per_source": {
+      "gsm8k": 0.665,
+      "math": 0.445
+    },
+    "reasoning_patterns": {
+      "uses_step_numbers": 0.01,
+      "uses_equations": 0.64,
+      "uses_therefore": 0.1725,
+      "uses_hashtag_delimiter": 0.8,
+      "uses_boxed": 0.2775,
+      "uses_think_tags": 0.0,
+      "shows_intermediate_calc": 1.0,
+      "avg_response_length": 468.99,
+      "avg_num_lines": 8.5775
+    }
+  },
+  "grpo": {
+    "accuracy": 0.6275,
+    "per_source": {
+      "gsm8k": 0.735,
+      "math": 0.52
+    },
+    "reasoning_patterns": {
+      "uses_step_numbers": 0.755,
+      "uses_equations": 0.195,
+      "uses_therefore": 0.135,
+      "uses_hashtag_delimiter": 0.15,
+      "uses_boxed": 0.02,
+      "uses_think_tags": 0.0,
+      "shows_intermediate_calc": 0.995,
+      "avg_response_length": 482.78,
+      "avg_num_lines": 8.67
+    }
+  }
+}
